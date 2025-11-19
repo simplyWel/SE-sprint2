@@ -97,10 +97,10 @@ void complexFuncionalTest() {
     Model m;
     System Q1, Q2, Q3, Q4, Q5;
 
-    Q1.setValue(10);
+    Q1.setValue(100);
     Q2.setValue(0);
-    Q3.setValue(1);
-    Q4.setValue(10);
+    Q3.setValue(100);
+    Q4.setValue(0);
     Q5.setValue(0);
 
     Flow_alt f, g, t, u, r;
@@ -123,14 +123,15 @@ void complexFuncionalTest() {
     u.setSource(&Q3); u.setTarget(&Q4);
     r.setSource(&Q2); r.setTarget(&Q5);
 
-    m.run(0, 10);
+    m.run(0, 100);
     m.report();
 
-    double eQ1 = 4.0655;
-    double eQ2 = 0.0000;
-    double eQ3 = 7.5667;
-    double eQ4 = 7.2832;
-    double eQ5 = 0.0000;
+    // valores esperados 
+    double eQ1 = 31.8513;
+    double eQ2 = 18.4003;
+    double eQ3 = 77.1143;
+    double eQ4 = 56.1728;
+    double eQ5 = 16.4612;
 
     assert(fabs(Q1.getValue() - eQ1) < 0.001);
     assert(fabs(Q2.getValue() - eQ2) < 0.001);
@@ -138,5 +139,5 @@ void complexFuncionalTest() {
     assert(fabs(Q4.getValue() - eQ4) < 0.001);
     assert(fabs(Q5.getValue() - eQ5) < 0.001);
 
-    cout << "Complex Functional Test passed!\n";
+    cout << "ComplexFunctionalTest passed\n\n";
 }

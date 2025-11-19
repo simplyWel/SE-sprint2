@@ -1,43 +1,31 @@
-# Compiler
-CXX = g++
-CXXFLAGS = -std=c++11 -Wall -I./src
+.PHONY: all DLL BUILD_PRODUCT product BUILD_UNIT_TEST unit BUILD_FUNC_TEST funcional clean
 
-# directory
-SRC_DIR = src
-TEST_UNIT_DIR = test/unit
-TEST_FUNC_DIR = test/funcional
-BIN_DIR = bin
+all: BUILD_PRODUCT BUILD_UNIT_TEST BUILD_FUNC_TEST
 
-# .cpp files in src 
-SRC_CPP = $(wildcard $(SRC_DIR)/*.cpp)
+DLL:
+	@g++ -shared -fPIC -o ./bin/libbib.so ./src/*.cpp
 
-# files in src directory, except for main.cpp
-SRC_NO_MAIN = $(filter-out $(SRC_DIR)/main.cpp, $(SRC_CPP))
+BUILD_PRODUCT: DLL
+	@g++ ./src/*.cpp ./bin/libbib.so -o ./bin/product
 
-# tests files
-UNIT_TEST_FILES = $(wildcard $(TEST_UNIT_DIR)/*.cpp)
-FUNC_TEST_FILES = $(wildcard $(TEST_FUNC_DIR)/*.cpp)
+product:
+	./bin/product
 
-# creates executables
-PRODUCT = $(BIN_DIR)/product
-UNIT_TEST = $(BIN_DIR)/unit_tests
-FUNC_TEST = $(BIN_DIR)/funcional_tests
+BUILD_UNIT_TEST: DLL
+	@g++ ./test/unit/*.cpp ./bin/libbib.so -o ./bin/unit_tests
 
-# all compiler
-all: $(PRODUCT) $(UNIT_TEST) $(FUNC_TEST)
+unit:
+	./bin/unit_tests
 
-# compiler the product
-$(PRODUCT): $(SRC_CPP)
-	@$(CXX) $(CXXFLAGS) -o $(PRODUCT) $(SRC_CPP)
+BUILD_FUNC_TEST: DLL
+	@g++ ./test/funcional/*.cpp ./bin/libbib.so -o ./bin/funcional_tests
 
-# Compiler units tests
-$(UNIT_TEST): $(UNIT_TEST_FILES) $(SRC_NO_MAIN)
-	@$(CXX) $(CXXFLAGS) -o $(UNIT_TEST) $(UNIT_TEST_FILES) $(SRC_NO_MAIN)
+funcional: 
+	./bin/funcional_tests
 
-# Compiler funcional tests
-$(FUNC_TEST): $(FUNC_TEST_FILES) $(SRC_NO_MAIN)
-	@$(CXX) $(CXXFLAGS) -o $(FUNC_TEST) $(FUNC_TEST_FILES) $(SRC_NO_MAIN)
-
-# clean executables 
 clean:
-	@rm -f $(PRODUCT) $(UNIT_TEST) $(FUNC_TEST)
+	rm -f ./bin/*.o
+	rm -f ./bin/*.so
+	rm -f ./bin/unit_tests
+	rm -f ./bin/funcional_tests
+	rm -f ./bin/product

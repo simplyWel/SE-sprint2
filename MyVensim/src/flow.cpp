@@ -3,14 +3,24 @@
 
 Flow::Flow() : source(nullptr), target(nullptr) {}
 
-Flow::~Flow(){}
+Flow::~Flow() {}
 
-double Flow::equation() {return 0.0;}
+double Flow::equation() {
+    return 0.0;
+}
 
-void Flow::setSource(System* s) {source = s;}
+void Flow::setSource(System* s) {
+    source = s;
+}
 
-void Flow::setTarget(System* t) {target = t;}
+void Flow::setTarget(System* t) {
+    target = t;
+}
 
-System* Flow::getSource() const {return source;}
+System* Flow::getSource() const {
+    return source;
+}
 
-System* Flow::getTarget() const {return target;}
+System* Flow::getTarget() const {
+    return target;
+}
