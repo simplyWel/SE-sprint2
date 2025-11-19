@@ -4,20 +4,18 @@
 class System {
 private:
     double value;
-    double valueNext;
 public:
-    System();
+    System(double v);
+    System(const System& other);
     ~System();
 
     void setValue(double v);
     double getValue() const;
 
     void setValueNext(double v);
-    double getValueNext() const;
+    void addValue(double da);
 
-    void commit();
-
-    //criar um operador sobrecarregado com = nos .h da src
+    const System& operator=(const System& other);
 
 };
 

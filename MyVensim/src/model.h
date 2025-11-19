@@ -13,7 +13,11 @@ private:
     vector<System*> systems;
 public:
     Model();
+    Model(const Model& model); 
     ~Model();
+
+    const Model& operator=(const Model& model); 
+    
     void add(Flow* f);
     void add(System* s);
     void run(int start, int end);

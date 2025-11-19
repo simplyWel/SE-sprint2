@@ -1,6 +1,8 @@
 #include "system.h"
 
-System::System() : value(0.0), valueNext(0.0) {}
+System::System(double v) : value(v) {}
+
+System::System(const System& other) : value(other.value) {}
 
 System::~System() {}
 
@@ -8,8 +10,11 @@ void System::setValue(double v) {value = v;}
 
 double System::getValue() const {return value;}
 
-void System::setValueNext(double v) {valueNext = v;}
+void System::addValue(double ad) {value += ad;}
 
-double System::getValueNext() const {return valueNext;}
-
-void System::commit() {value = valueNext;}
+const System& System::operator=(const System& other) {
+    if (this != &other) {          
+        setValue(other.getValue());
+    }
+    return *this;                  
+}

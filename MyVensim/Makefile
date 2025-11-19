@@ -24,8 +24,8 @@ funcional:
 	./bin/funcional_tests
 
 clean:
-	rm -f ./bin/*.o
-	rm -f ./bin/*.so
-	rm -f ./bin/unit_tests
-	rm -f ./bin/funcional_tests
-	rm -f ./bin/product
+	@rm -f ./bin/*.o
+	@rm -f ./bin/*.so
+	@rm -f ./bin/unit_tests
+	@rm -f ./bin/funcional_tests
+	@rm -f ./bin/product

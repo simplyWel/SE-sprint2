@@ -7,11 +7,37 @@
 
 using namespace std;
 
-//test1
-class Flow_exp : public Flow {
+class FlowLog : public Flow {
+private:
+    System* p2;
 public:
+    FlowLog(System* p2 = nullptr) : Flow(), p2(p2) {}
+
     double equation() override {
+        if (!p2) return 0.0;
+        double val = p2->getValue();
+        return 0.01 * val * (1 - val / 70.0);
+    }
+};
+
+class FlowExp : public Flow {
+public:
+    FlowExp() : Flow() {}
+    double equation() override {
+        if (!getSource()) return 0.0;
         return 0.1 * getSource()->getValue();
+    }
+};
+
+class FlowTaxa : public Flow {
+private:
+    double taxa;
+public:
+    FlowTaxa(double taxa = 0.01) : Flow(), taxa(taxa) {}
+
+    double equation() override {
+        if (!getSource()) return 0.0;
+        return taxa * getSource()->getValue();
     }
 };
 
@@ -19,11 +45,9 @@ void exponentialFuncionalTest() {
     cout << "\nExponential Functional Test\n";
 
     Model m;
-    System pop1, pop2;
-    pop1.setValue(10);
-    pop2.setValue(0);
+    System pop1(10.0), pop2(0.0);
 
-    Flow_exp exp;
+    FlowExp exp; // classe definida em src/flow.h
 
     m.add(&pop1);
     m.add(&pop2);
@@ -44,7 +68,6 @@ void exponentialFuncionalTest() {
     cout << "Exponential Functional Test passed!\n";
 }
 
-//test2
 class Flow_log : public Flow {
 public:
     double equation() override {
@@ -57,11 +80,9 @@ void logisticalFuncionalTest() {
     cout << "\nLogistical Functional Test\n";
 
     Model m;
-    System p1, p2;
-    p1.setValue(10);
-    p2.setValue(0);
+    System p1(10.0), p2(0.0);
 
-    Flow_log log;
+    FlowLog log;
 
     m.add(&p1);
     m.add(&p2);
@@ -73,9 +94,8 @@ void logisticalFuncionalTest() {
     m.run(0, 10);
     m.report();
 
-    // valores esperados
-    double expected_p1 = 10.0;     
-    double expected_p2 = 0.0;      
+    double expected_p1 = 10.0;
+    double expected_p2 = 0.0;
 
     assert(fabs(p1.getValue() - expected_p1) < 0.001);
     assert(fabs(p2.getValue() - expected_p2) < 0.001);
@@ -83,39 +103,16 @@ void logisticalFuncionalTest() {
     cout << "Logistical Functional Test passed!\n";
 }
 
-//test3
-class Flow_alt : public Flow {
-public:
-    double equation() override {
-        return 0.01 * getSource()->getValue();
-    }
-};
-
 void complexFuncionalTest() {
     cout << "\nComplex Functional Test\n";
 
     Model m;
-    System Q1, Q2, Q3, Q4, Q5;
+    System Q1(100.0), Q2(0.0), Q3(100.0), Q4(0.0), Q5(0.0);
 
-    Q1.setValue(100);
-    Q2.setValue(0);
-    Q3.setValue(100);
-    Q4.setValue(0);
-    Q5.setValue(0);
+    FlowTaxa f, g, t, u, r;
 
-    Flow_alt f, g, t, u, r;
-
-    m.add(&Q1); 
-    m.add(&Q2); 
-    m.add(&Q3); 
-    m.add(&Q4); 
-    m.add(&Q5);
-
-    m.add(&f); 
-    m.add(&g); 
-    m.add(&t); 
-    m.add(&u); 
-    m.add(&r);
+    m.add(&Q1); m.add(&Q2); m.add(&Q3); m.add(&Q4); m.add(&Q5);
+    m.add(&f); m.add(&g); m.add(&t); m.add(&u); m.add(&r);
 
     f.setSource(&Q4); f.setTarget(&Q1);
     g.setSource(&Q1); g.setTarget(&Q3);
@@ -125,19 +122,12 @@ void complexFuncionalTest() {
 
     m.run(0, 100);
     m.report();
+    
+    assert(fabs(Q1.getValue() - 61.5266) < 0.001);
+    assert(fabs(Q2.getValue() -       0) < 0.001);
+    assert(fabs(Q3.getValue() -  81.223) < 0.001);
+    assert(fabs(Q4.getValue() - 57.2504) < 0.001);
+    assert(fabs(Q5.getValue() -       0) < 0.001);
 
-    // valores esperados 
-    double eQ1 = 31.8513;
-    double eQ2 = 18.4003;
-    double eQ3 = 77.1143;
-    double eQ4 = 56.1728;
-    double eQ5 = 16.4612;
-
-    assert(fabs(Q1.getValue() - eQ1) < 0.001);
-    assert(fabs(Q2.getValue() - eQ2) < 0.001);
-    assert(fabs(Q3.getValue() - eQ3) < 0.001);
-    assert(fabs(Q4.getValue() - eQ4) < 0.001);
-    assert(fabs(Q5.getValue() - eQ5) < 0.001);
-
-    cout << "ComplexFunctionalTest passed\n\n";
+    cout << "Complex Functional Test passed\n\n";
 }
